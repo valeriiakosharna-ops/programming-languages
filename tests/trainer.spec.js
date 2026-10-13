@@ -9,6 +9,7 @@ test('ten drawing lessons execute on static Pages and edits change drawings',asy
  const errors=[],requests=[];
  page.on('pageerror',e=>errors.push(e.message));page.on('request',r=>requests.push({method:r.method(),url:r.url()}));
  await page.goto('./');
+ await page.locator('#animate').uncheck();
  for(const level of [1,2]) {
   await page.locator(`[data-level="${level}"]`).click();
   for(const language of languages) {
