@@ -1,0 +1,32 @@
+[
+  {
+    "name": "clang.wasm",
+    "url": "https://raw.githubusercontent.com/taybenlor/runno/3c32435e7a07a59aac3f5497040c8c6317d1cff3/langs/clang.wasm",
+    "sha256": "2a466f0e990329d3230b869d04fc20803eae96a7feb3a3f6c93e25a77b8aed1d"
+  },
+  {
+    "name": "wasm-ld.wasm",
+    "url": "https://raw.githubusercontent.com/taybenlor/runno/3c32435e7a07a59aac3f5497040c8c6317d1cff3/langs/wasm-ld.wasm",
+    "sha256": "36419ed202011765222098d7701218378b67f634d50f0a4625059ae2c9860f48"
+  },
+  {
+    "name": "clang-fs.tar.gz",
+    "url": "https://raw.githubusercontent.com/taybenlor/runno/3c32435e7a07a59aac3f5497040c8c6317d1cff3/langs/clang-fs.tar.gz",
+    "sha256": "7ed12063619882e4dfa710ab371fc91848b256f85a4075747e8bd5c167902b50"
+  },
+  {
+    "name": "php-cgi-8.2.0.wasm",
+    "url": "https://raw.githubusercontent.com/taybenlor/runno/3c32435e7a07a59aac3f5497040c8c6317d1cff3/langs/php-cgi-8.2.0.wasm",
+    "sha256": "68c96239a9b8095f21dd80af1714e5f270e4e08ef516821d90290da72d829a0e"
+  },
+  {
+    "name": "ruby-3.2.0.wasm",
+    "url": "https://raw.githubusercontent.com/taybenlor/runno/3c32435e7a07a59aac3f5497040c8c6317d1cff3/langs/ruby-3.2.0.wasm",
+    "sha256": "abe348fba157a756f86194be445c77c99e8ed64ca76495ea07ed984f09eb66ae"
+  },
+  {
+    "name": "ruby-3.2.0.tar.gz",
+    "url": "https://raw.githubusercontent.com/taybenlor/runno/3c32435e7a07a59aac3f5497040c8c6317d1cff3/langs/ruby-3.2.0.tar.gz",
+    "sha256": "6185476bef279d3a00d9909fa7ba5fb39279f8650a6f723e956b879a12535da2"
+  }
+]

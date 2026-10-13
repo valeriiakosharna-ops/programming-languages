@@ -8,7 +8,8 @@ self.onmessage = async ({data}) => {
  try {
   postMessage({type:'executing',text:'Твій код працює…'});
   const AsyncFunction = Object.getPrototypeOf(async function(){}).constructor;
-  await new AsyncFunction('console', '"use strict";\n' + data.code)({log:write,info:write,warn:write,error:write});
+  const turtle = Object.fromEntries(['forward','right','left','color','penup','pendown'].map(cmd=>[cmd,value=>write('__NIX_TURTLE__:'+JSON.stringify({cmd,value}))]));
+  await new AsyncFunction('console','turtle', '"use strict";\n' + data.code)({log:write,info:write,warn:write,error:write},turtle);
   postMessage({type:'result',result:{ok:true,stdout,stderr}});
  } catch(error) {postMessage({type:'result',result:{ok:false,stdout:stdout.slice(0,12000),stderr:`${error.name}: ${error.message}`}});}
 };
