@@ -27,6 +27,10 @@ jobs:
         with:
           path: .cache/java-home-v3.2.tar.gz
           key: java-home-v3.2-bee079d16b8631ff
+      - uses: actions/cache@v4
+        with:
+          path: .cache/runno
+          key: runno-assets-${{ hashFiles('scripts/runtime-assets.json') }}
       - run: npm ci --ignore-scripts
       - run: npm run build
       - run: npx playwright install --with-deps chromium

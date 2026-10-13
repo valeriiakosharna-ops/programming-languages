@@ -52,6 +52,9 @@ self.onmessage = async ({data}) => {
   process.stdout.on('data',chunk => append('out',chunk));
   process.stderr.on('data',chunk => append('err',chunk));
   fs.writeFileSync('/home/Main.java',data.code,'utf8');
+  const helper=await fetch(new URL('../turtle/Turtle.java',self.location.href));
+  if(!helper.ok)throw Error('Не вдалося завантажити черепашку.');
+  fs.writeFileSync('/home/Turtle.java',await helper.text(),'utf8');
   const opts = {doppioHomePath:'/sys',javaHomePath:'/sys/java_home',
    bootstrapClasspath:['/sys/java_home/lib/rt.jar','/sys/java_home/lib/doppio.jar','/sys/java_home/lib/charsets.jar'],
    classpath:['/sys/java_home/lib/tools.jar','/home'],tmpDir:'/tmp',enableAssertions:false,properties:{'java.ext.dirs':''}};
@@ -59,7 +62,7 @@ self.onmessage = async ({data}) => {
    if(err)reject(err);else jvm.runClass(name,args,resolve);
   }));
   postMessage({type:'status',text:'Компілюємо твою Java-програму…'});
-  const compiled = await invoke('com.sun.tools.javac.Main',['-encoding','UTF-8','-source','8','-target','8','/home/Main.java']);
+  const compiled = await invoke('com.sun.tools.javac.Main',['-encoding','UTF-8','-source','8','-target','8','/home/Main.java','/home/Turtle.java']);
   if(compiled!==0) {postMessage({type:'result',result:{ok:false,stdout,stderr}});return;}
   stdout='';stderr='';
   postMessage({type:'executing',text:'Твій код працює…'});

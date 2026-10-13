@@ -13,7 +13,7 @@ function destroy(language) {
 export function stopCode() {activeRun?.abort('stop');}
 export function runCode(language,code,onStatus) {
  return new Promise(resolve => {
-  const worker = workers.get(language) || new Worker(new URL(`workers/${language}.js`,import.meta.url));
+  const worker = workers.get(language) || new Worker(new URL(`workers/${['cpp','php','ruby'].includes(language) ? 'wasi' : language}.js`,import.meta.url), {type:['cpp','php','ruby'].includes(language) ? 'module' : 'classic'});
   workers.set(language,worker);
   let finished=false;
   // Loading/Java compilation may take longer; execution itself has a short limit.
@@ -41,6 +41,6 @@ export function runCode(language,code,onStatus) {
    event.preventDefault();destroy(language);
    finish({ok:false,stdout:'',stderr:'Не вдалося запустити середовище. Онови сторінку й спробуй ще раз.\n'+event.message});
   };
-  worker.postMessage({code});
+  worker.postMessage({code,language});
  });
 }
