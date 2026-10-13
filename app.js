@@ -2,11 +2,11 @@ import { runCode, stopCode } from './runner.js';
 import { languages, lesson, demos } from './lessons.js';
 import { emptyOutput, renderOutput } from './drawing.js';
 const $=id=>document.getElementById(id);
-let language='python',level=1,busy=false;
+let language='python',level=1,busy=false,drawingController;
 const drafts={};
 function key(){return `${language}-${level}`;}
 function controls(disabled) {
- document.querySelectorAll('[data-lang],[data-level],#reset,#run,[data-demo],#ts-error-toggle').forEach(b=>b.disabled=disabled);
+ document.querySelectorAll('[data-lang],[data-level],#reset,#run,[data-demo],#ts-error-toggle,#animate').forEach(b=>b.disabled=disabled);
 }
 function renderLesson() {
  const current=lesson(language,level);
@@ -36,14 +36,21 @@ async function run() {
  if(busy)return;busy=true;controls(true);$('stop').hidden=false;$('run').textContent='Виконуємо…';$('error').hidden=true;$('status').textContent='Готуємо запуск…';
  try {
   const result=await runCode(language,$('code').value,text=>{$('status').textContent=text;});
-  $('stdout').textContent=result.stdout || '(Програма нічого не вивела)';renderOutput($('visual'),result);
-  $('status').textContent=result.ok?'✓ Виконано — результат нижче':'Спробуй ще раз';
+  $('stdout').textContent=result.stdout || '(Програма нічого не вивела)';
+  drawingController=new AbortController();
+  let revealed=false;
+  const playback=await renderOutput($('visual'),result,{signal:drawingController.signal,animate:$('animate').checked,onProgress:text=>{
+   $('status').textContent=text;
+   if(!revealed){revealed=true;$('visual').scrollIntoView({behavior:'instant',block:'nearest'});}
+  }});
+  $('status').textContent=playback.cancelled?'Малювання зупинено':result.ok?'✓ Виконано — результат нижче':'Спробуй ще раз';
   if(!result.ok){$('error').hidden=false;$('error').textContent=errorText(result);}
  } catch(error) {
   $('status').textContent='Не вдалося запустити';$('error').hidden=false;$('error').textContent='Перевір з’єднання, онови сторінку й спробуй ще раз.';
- } finally {busy=false;controls(false);$('stop').hidden=true;$('run').textContent='▷ Запустити код';}
+ } finally {drawingController=undefined;busy=false;controls(false);$('stop').hidden=true;$('run').textContent='▷ Запустити код';}
 }
-$('stop').onclick=stopCode;$('run').onclick=run;
+$('stop').onclick=()=>{stopCode();drawingController?.abort();};$('run').onclick=run;
+$('animate').checked=!matchMedia('(prefers-reduced-motion: reduce)').matches;
 for(const [id,demo] of Object.entries(demos))$(`${id}-code`).textContent=demo.code;
 $('ts-error-toggle').onchange=()=> {
  $('typescript-code').textContent=$('ts-error-toggle').checked?demos.typescript.code.replace('name: "Олено"','name: 42'):demos.typescript.code;
@@ -55,7 +62,7 @@ document.querySelectorAll('[data-demo]').forEach(button=>button.onclick=async()=
  error.hidden=true;stop.hidden=false;status.textContent='Готуємо демонстрацію…';
  try {
   const result=await runCode(id,$(`${id}-code`).textContent,text=>{status.textContent=text;});
-  renderOutput($(`${id}-output`),result);
+  await renderOutput($(`${id}-output`),result,{animate:false});
   status.textContent=result.ok?'✓ Демонстрацію виконано':'Перевірка виявила помилку';
   if(id==='typescript') {
    $('typescript-compiled').textContent=result.compiledCode || 'Код не перетворено: спочатку виправ помилку типу.';
